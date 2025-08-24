@@ -61,8 +61,10 @@ const Contact = () => {
         throw new Error("Please enter a valid email address");
       }
 
-      // Try to submit to Cloudflare Worker, with fallback
+      // Try to submit to API endpoint
       try {
+        console.log('Sending form data to /api/contact:', formData);
+        
         const response = await fetch('/api/contact', {
           method: 'POST',
           headers: {
@@ -75,10 +77,14 @@ const Contact = () => {
           }),
         });
 
+        console.log('API Response status:', response.status);
+        console.log('API Response headers:', Object.fromEntries(response.headers.entries()));
+
         const result = await response.json();
+        console.log('API Response data:', result);
 
         if (!response.ok || !result.success) {
-          throw new Error(result.error || 'Failed to send message');
+          throw new Error(result.error || `API Error: ${response.status} ${response.statusText}`);
         }
 
         // Success with Telegram integration
@@ -88,14 +94,11 @@ const Contact = () => {
         });
         
       } catch (fetchError) {
-        // Fallback for development or when API is unavailable
-        console.log('Contact form data (development):', formData);
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        console.error('Contact form submission error:', fetchError);
         
-        toast({
-          title: "Message Received! ✨",
-          description: `Thank you for reaching out${formData.purpose ? ` regarding ${formData.purpose.toLowerCase()}` : ''}. I'll get back to you within 24 hours.`,
-        });
+        // Show the actual error instead of fallback success
+        const errorMessage = fetchError instanceof Error ? fetchError.message : 'Unknown error occurred';
+        throw new Error(`Failed to send message: ${errorMessage}`);
       }
       
       setFormData({

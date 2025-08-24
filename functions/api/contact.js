@@ -11,6 +11,13 @@ async function sendToTelegram(formData, env) {
   const botToken = env.TELEGRAM_BOT_TOKEN;
   const chatId = env.TELEGRAM_CHAT_ID;
   
+  console.log('Telegram send attempt:', {
+    hasBotToken: !!botToken,
+    hasChatId: !!chatId,
+    chatId: chatId,
+    botTokenPrefix: botToken ? botToken.substring(0, 10) + '...' : 'none'
+  });
+  
   if (!botToken || !chatId) {
     console.log('Telegram credentials not configured');
     return false;
@@ -71,6 +78,13 @@ async function isRateLimited(request, env) {
 
 export async function onRequestPost(context) {
   const { request, env } = context;
+  
+  console.log('Contact API called with method:', request.method);
+  console.log('Environment variables available:', {
+    hasBotToken: !!env.TELEGRAM_BOT_TOKEN,
+    hasChatId: !!env.TELEGRAM_CHAT_ID,
+    botTokenLength: env.TELEGRAM_BOT_TOKEN ? env.TELEGRAM_BOT_TOKEN.length : 0
+  });
   
   try {
     // Handle CORS preflight

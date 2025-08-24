@@ -8,19 +8,13 @@ export default defineConfig(({ command }) => ({
   server: {
     host: "::",
     port: 8080,
-    // Proxy API calls to your Cloudflare Worker in development
-    // Replace 'your-worker-name.your-subdomain.workers.dev' with your actual worker URL
+    // Proxy API calls to your deployed Cloudflare Pages for development testing
     proxy: {
       '/api': {
-        target: 'https://hemanth-portfolio-contact.your-subdomain.workers.dev',
+        target: 'https://hemanth-s-kumar-portfolio.pages.dev',
         changeOrigin: true,
         secure: true,
-        configure: (proxy, options) => {
-          // Fallback for development when worker is not available
-          proxy.on('error', (err, req, res) => {
-            console.log('API proxy error, using fallback');
-          });
-        },
+        rewrite: (path) => path,
       },
     },
   },
