@@ -117,7 +117,25 @@ src/
 
 ### Environment Variables for Cloudflare:
 - No environment variables required for basic deployment
-- Add `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` for contact form functionality
+- **For contact form functionality, add these in Cloudflare Pages settings:**
+  - `TELEGRAM_BOT_TOKEN`: Your bot token from @BotFather
+  - `TELEGRAM_CHAT_ID`: Your personal chat ID (from getUpdates API)
+
+### Setting up Telegram Integration:
+
+1. **Get your bot token** from @BotFather on Telegram
+2. **Your chat ID** is: `6834626813` (from your message data)
+3. **Add environment variables** in Cloudflare Pages:
+   - Go to your Cloudflare Pages project settings
+   - Navigate to "Environment variables"
+   - Add `TELEGRAM_BOT_TOKEN` with your bot token
+   - Add `TELEGRAM_CHAT_ID` with value `6834626813`
+   - **Important**: Set these for "Production" environment
+
+### Testing the Contact Form:
+1. Deploy with environment variables set
+2. Test the contact form on your live site
+3. Check your Telegram for instant notifications
 
 ## License
 
