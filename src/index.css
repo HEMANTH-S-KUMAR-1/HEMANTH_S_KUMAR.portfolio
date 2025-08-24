@@ -1,0 +1,234 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Hemanth Portfolio Design System - Professional Dark Theme */
+
+@layer base {
+  :root {
+    /* Light Theme Colors */
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    
+    /* Card System */
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --card-hover: 240 4.8% 95.9%;
+    
+    /* Electric Indigo Primary */
+    --primary: 249 100% 70%;
+    --primary-foreground: 0 0% 98%;
+    --primary-glow: 249 100% 80%;
+    
+    /* Turquoise Secondary */
+    --secondary: 174 100% 50%;
+    --secondary-foreground: 240 10% 3.9%;
+    
+    /* Vibrant Coral Accent */
+    --accent: 4 100% 70%;
+    --accent-foreground: 0 0% 98%;
+    
+    /* Muted Grays */
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    
+    /* Success Spring Green */
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 98%;
+    
+    /* Warning Amber */
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 98%;
+    
+    /* Secure Blue (was Destructive Red) */
+    --destructive: 221 83% 53%;
+    --destructive-foreground: 0 0% 98%;
+    
+    /* Borders & Inputs */
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 249 100% 70%;
+    
+    /* Popover */
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    
+    /* Card */
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    
+    /* Special Effects */
+    --glass: 0 0% 100% / 0.8;
+    --shimmer: 249 100% 85%;
+    
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(249 100% 70%), hsl(174 100% 50%));
+    --gradient-secondary: linear-gradient(135deg, hsl(174 100% 50%), hsl(249 100% 70%));
+    --gradient-hero: linear-gradient(135deg, hsl(0 0% 100%), hsl(240 4.8% 95.9%));
+    --gradient-card: linear-gradient(135deg, hsl(0 0% 100%), hsl(240 4.8% 95.9%));
+    
+    /* Shadows */
+    --shadow-glow: 0 0 40px hsl(249 100% 70% / 0.3);
+    --shadow-card: 0 8px 32px hsl(240 10% 3.9% / 0.1);
+    --shadow-elevated: 0 16px 64px hsl(240 10% 3.9% / 0.15);
+    
+    --radius: 0.75rem;
+  }
+
+  .dark {
+    /* Core Dark Theme Colors */
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    
+    /* Card System */
+    --card: 240 10% 8%;
+    --card-foreground: 0 0% 95%;
+    --card-hover: 240 15% 12%;
+    
+    /* Electric Indigo Primary */
+    --primary: 249 100% 70%;
+    --primary-foreground: 0 0% 98%;
+    --primary-glow: 249 100% 80%;
+    
+    /* Turquoise Secondary */
+    --secondary: 174 100% 50%;
+    --secondary-foreground: 240 10% 3.9%;
+    
+    /* Vibrant Coral Accent */
+    --accent: 4 100% 70%;
+    --accent-foreground: 0 0% 98%;
+    
+    /* Muted Grays */
+    --muted: 240 5% 15%;
+    --muted-foreground: 240 5% 65%;
+    
+    /* Success Spring Green */
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 98%;
+    
+    /* Warning Amber */
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 98%;
+    
+    /* Secure Blue (was Destructive Red) */
+    --destructive: 221 83% 53%;
+    --destructive-foreground: 0 0% 98%;
+    
+    /* Borders & Inputs */
+        /* Borders & Inputs */
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 249 100% 70%;
+    
+    /* Popover */
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    
+    /* Card */
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    
+    /* Special Effects */
+    --glass: 240 10% 8% / 0.8;
+    --shimmer: 249 100% 85%;
+    
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(249 100% 70%), hsl(174 100% 50%));
+    --gradient-secondary: linear-gradient(135deg, hsl(174 100% 50%), hsl(249 100% 70%));
+    --gradient-hero: linear-gradient(135deg, hsl(240 10% 3.9%), hsl(240 15% 8%));
+    --gradient-card: linear-gradient(135deg, hsl(240 10% 8%), hsl(240 15% 12%));
+    
+    /* Shadows */
+    --shadow-glow: 0 0 40px hsl(249 100% 70% / 0.3);
+    --shadow-card: 0 8px 32px hsl(240 10% 3.9% / 0.5);
+    --shadow-elevated: 0 16px 64px hsl(240 10% 3.9% / 0.6);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Improved focus styles for accessibility */
+  *:focus-visible {
+    @apply ring-2 ring-ring ring-offset-2 ring-offset-background outline-none;
+  }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* Custom animation utilities - Use Tailwind animations */
+  .animate-slide-up {
+    opacity: 0;
+    animation: slide-up 0.8s ease-out forwards;
+  }
+
+  .animate-slide-in-left {
+    opacity: 0;
+    animation: slide-in-left 0.8s ease-out forwards;
+  }
+
+  .animate-slide-in-right {
+    opacity: 0;
+    animation: slide-in-right 0.8s ease-out forwards;
+  }
+
+  /* Fallback for older browsers */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-slide-up,
+    .animate-slide-in-left,
+    .animate-slide-in-right,
+    .animate-fade-in {
+      animation: none !important;
+      opacity: 1 !important;
+      transform: none !important;
+    }
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-muted/20;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-primary/50 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-primary/70;
+  }
+}
+
+/* Custom Select dropdown styling for better visibility */
+[data-radix-select-content] {
+  background: hsl(var(--popover)) !important;
+  border: 1px solid hsl(var(--border)) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+.dark [data-radix-select-content] {
+  background: hsl(var(--popover)) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
+}
