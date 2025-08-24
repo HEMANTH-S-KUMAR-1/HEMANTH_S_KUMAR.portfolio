@@ -106,6 +106,19 @@ src/
 - **Validation**: Client and server-side validation
 - **User Feedback**: Toast notifications for user actions
 
+## Deployment Troubleshooting
+
+### Common Cloudflare Pages Issues:
+
+1. **Lockfile Conflicts**: This project uses npm exclusively. Bun lockfiles are ignored.
+2. **Build Command**: Always use `npm run build` (not `yarn` or `bun`)
+3. **Node Version**: Requires Node.js 18+ (specified in `.nvmrc` and `package.json`)
+4. **Build Output**: The build outputs to `dist/` directory
+
+### Environment Variables for Cloudflare:
+- No environment variables required for basic deployment
+- Add `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` for contact form functionality
+
 ## License
 
 This project is personal portfolio website. All rights reserved.
@@ -113,5 +126,3 @@ This project is personal portfolio website. All rights reserved.
 ## Contact
 
 Feel free to reach out for any questions or opportunities!
-
-# HEMANTH_S_KUMAR.portfolio
