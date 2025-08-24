@@ -18,6 +18,17 @@ const Certifications = () => {
       color: "warning"
     },
     {
+      id: 11,
+      title: "AWS Educate Introduction to Cloud 101",
+      issuer: "AWS Educate",
+      year: "2025",
+      status: "Completed",
+      description: "Advanced cloud computing fundamentals and AWS services introduction with hands-on experience.",
+      image: "/assets/certificates/aws-educate-introduction-to-cloud-101.png",
+      skills: ["AWS Cloud", "Cloud Computing", "AWS Services"],
+      color: "warning"
+    },
+    {
       id: 2,
       title: "Introduction to Cybersecurity",
       issuer: "Cisco",
@@ -258,17 +269,17 @@ const Certifications = () => {
         <div className="mt-16 grid grid-cols-1 md:grid-cols-4 gap-6 text-center">
           <div className="p-6 rounded-lg bg-gradient-card border border-primary/20">
             <Award className="w-8 h-8 text-primary mx-auto mb-4" />
-            <div className="text-2xl font-bold text-primary mb-2">7+</div>
+            <div className="text-2xl font-bold text-primary mb-2">11</div>
             <div className="text-sm text-muted-foreground">Certifications</div>
           </div>
           <div className="p-6 rounded-lg bg-gradient-card border border-success/20">
             <CheckCircle className="w-8 h-8 text-success mx-auto mb-4" />
-            <div className="text-2xl font-bold text-success mb-2">5</div>
+            <div className="text-2xl font-bold text-success mb-2">11</div>
             <div className="text-sm text-muted-foreground">Completed</div>
           </div>
           <div className="p-6 rounded-lg bg-gradient-card border border-warning/20">
             <Calendar className="w-8 h-8 text-warning mx-auto mb-4" />
-            <div className="text-2xl font-bold text-warning mb-2">2</div>
+            <div className="text-2xl font-bold text-warning mb-2">0</div>
             <div className="text-sm text-muted-foreground">In Progress</div>
           </div>
           <div className="p-6 rounded-lg bg-gradient-card border border-secondary/20">
