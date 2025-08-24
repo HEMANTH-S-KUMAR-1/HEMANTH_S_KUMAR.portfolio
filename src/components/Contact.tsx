@@ -61,9 +61,13 @@ const Contact = () => {
         throw new Error("Please enter a valid email address");
       }
 
-      // Try to submit to API endpoint
-      try {
-        console.log('Sending form data to /api/contact:', formData);
+      // For development, we'll use a simple mailto fallback
+      // For production, use the Cloudflare Pages Function
+      const isProduction = window.location.hostname !== 'localhost';
+      
+      if (isProduction) {
+        // Production: Use Cloudflare Pages Function
+        console.log('Production mode: Using /api/contact endpoint');
         
         const response = await fetch('/api/contact', {
           method: 'POST',
@@ -72,33 +76,58 @@ const Contact = () => {
           },
           body: JSON.stringify({
             ...formData,
-            // Honeypot field for spam protection
-            website: '', 
+            website: '', // Honeypot field
           }),
         });
 
-        console.log('API Response status:', response.status);
-        console.log('API Response headers:', Object.fromEntries(response.headers.entries()));
-
         const result = await response.json();
-        console.log('API Response data:', result);
 
         if (!response.ok || !result.success) {
-          throw new Error(result.error || `API Error: ${response.status} ${response.statusText}`);
+          throw new Error(result.error || 'Failed to send message');
         }
 
-        // Success with Telegram integration
         toast({
           title: "Message Sent Successfully! ✨",
-          description: `Thank you for reaching out${formData.purpose ? ` regarding ${formData.purpose.toLowerCase()}` : ''}. I'll get back to you within 24 hours.${result.telegramDelivered ? ' (Instant notification sent!)' : ''}`,
+          description: `Thank you for reaching out${formData.purpose ? ` regarding ${formData.purpose.toLowerCase()}` : ''}. I'll get back to you within 24 hours!${result.telegramDelivered ? ' (Instant notification sent!)' : ''}`,
         });
+
+      } else {
+        // Development: Use mailto as fallback + localStorage for testing
+        console.log('Development mode: Using mailto fallback');
         
-      } catch (fetchError) {
-        console.error('Contact form submission error:', fetchError);
+        // Save to localStorage for testing
+        const contactData = {
+          ...formData,
+          timestamp: new Date().toISOString(),
+          environment: 'development'
+        };
         
-        // Show the actual error instead of fallback success
-        const errorMessage = fetchError instanceof Error ? fetchError.message : 'Unknown error occurred';
-        throw new Error(`Failed to send message: ${errorMessage}`);
+        localStorage.setItem(`contact_${Date.now()}`, JSON.stringify(contactData));
+        console.log('Contact form data saved to localStorage:', contactData);
+
+        // Create mailto link
+        const subject = encodeURIComponent(formData.subject || `Contact from ${formData.name}`);
+        const body = encodeURIComponent(`
+Name: ${formData.name}
+Email: ${formData.email}
+Purpose: ${formData.purpose || 'Not specified'}
+Subject: ${formData.subject || 'Not specified'}
+
+Message:
+${formData.message}
+
+--
+Sent from portfolio contact form (Development Mode)
+        `);
+        
+        // Open email client
+        const mailtoLink = `mailto:hemanth.1si22ei049@gmail.com?subject=${subject}&body=${body}`;
+        window.open(mailtoLink, '_blank');
+
+        toast({
+          title: "Email Client Opened! 📧",
+          description: "Your email client should open with the message pre-filled. For production mode, deploy to Cloudflare Pages for Telegram integration.",
+        });
       }
       
       setFormData({
@@ -108,7 +137,9 @@ const Contact = () => {
         subject: "",
         message: ""
       });
+
     } catch (error) {
+      console.error('Contact form error:', error);
       toast({
         title: "Error Sending Message",
         description: (error as Error).message || "Please try again or contact me directly via email.",
