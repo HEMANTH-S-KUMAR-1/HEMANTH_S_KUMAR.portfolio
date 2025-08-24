@@ -61,74 +61,56 @@ const Contact = () => {
         throw new Error("Please enter a valid email address");
       }
 
-      // For development, we'll use a simple mailto fallback
-      // For production, use the Cloudflare Pages Function
-      const isProduction = window.location.hostname !== 'localhost';
-      
-      if (isProduction) {
-        // Production: Use Cloudflare Pages Function
-        console.log('Production mode: Using /api/contact endpoint');
-        
-        const response = await fetch('/api/contact', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            ...formData,
-            website: '', // Honeypot field
-          }),
-        });
+      // Direct Telegram integration for both localhost and production
+      const TELEGRAM_BOT_TOKEN = import.meta.env.VITE_TELEGRAM_BOT_TOKEN;
+      const TELEGRAM_CHAT_ID = '6834626813'; // Your chat ID
 
-        const result = await response.json();
+      if (!TELEGRAM_BOT_TOKEN) {
+        throw new Error("Telegram bot token not configured. Please add VITE_TELEGRAM_BOT_TOKEN to your environment variables.");
+      }
 
-        if (!response.ok || !result.success) {
-          throw new Error(result.error || 'Failed to send message');
-        }
+      const message = `
+🚀 *New Portfolio Contact Message*
 
-        toast({
-          title: "Message Sent Successfully! ✨",
-          description: `Thank you for reaching out${formData.purpose ? ` regarding ${formData.purpose.toLowerCase()}` : ''}. I'll get back to you within 24 hours!${result.telegramDelivered ? ' (Instant notification sent!)' : ''}`,
-        });
+👤 *Name:* ${formData.name}
+📧 *Email:* ${formData.email}
+${formData.purpose ? `🎯 *Purpose:* ${formData.purpose}` : ''}
+${formData.subject ? `📝 *Subject:* ${formData.subject}` : ''}
 
-      } else {
-        // Development: Use mailto as fallback + localStorage for testing
-        console.log('Development mode: Using mailto fallback');
-        
-        // Save to localStorage for testing
-        const contactData = {
-          ...formData,
-          timestamp: new Date().toISOString(),
-          environment: 'development'
-        };
-        
-        localStorage.setItem(`contact_${Date.now()}`, JSON.stringify(contactData));
-        console.log('Contact form data saved to localStorage:', contactData);
-
-        // Create mailto link
-        const subject = encodeURIComponent(formData.subject || `Contact from ${formData.name}`);
-        const body = encodeURIComponent(`
-Name: ${formData.name}
-Email: ${formData.email}
-Purpose: ${formData.purpose || 'Not specified'}
-Subject: ${formData.subject || 'Not specified'}
-
-Message:
+💬 *Message:*
 ${formData.message}
 
---
-Sent from portfolio contact form (Development Mode)
-        `);
-        
-        // Open email client
-        const mailtoLink = `mailto:hemanth.1si22ei049@gmail.com?subject=${subject}&body=${body}`;
-        window.open(mailtoLink, '_blank');
+⏰ *Received:* ${new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' })} IST
+🌐 *Source:* ${window.location.hostname === 'localhost' ? 'Development (localhost)' : 'Production Website'}
+      `;
 
-        toast({
-          title: "Email Client Opened! 📧",
-          description: "Your email client should open with the message pre-filled. For production mode, deploy to Cloudflare Pages for Telegram integration.",
-        });
+      console.log('Sending message to Telegram...');
+
+      const telegramResponse = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          chat_id: TELEGRAM_CHAT_ID,
+          text: message,
+          parse_mode: 'Markdown',
+          disable_web_page_preview: true,
+        }),
+      });
+
+      const telegramResult = await telegramResponse.json();
+      console.log('Telegram API response:', telegramResult);
+
+      if (!telegramResponse.ok || !telegramResult.ok) {
+        throw new Error(telegramResult.description || 'Failed to send to Telegram');
       }
+
+      // Success!
+      toast({
+        title: "Message Sent Successfully! ✨",
+        description: `Thank you for reaching out${formData.purpose ? ` regarding ${formData.purpose.toLowerCase()}` : ''}. I'll get back to you within 24 hours via email!`,
+      });
       
       setFormData({
         name: "",
