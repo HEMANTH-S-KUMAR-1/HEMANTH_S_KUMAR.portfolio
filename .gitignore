@@ -12,12 +12,30 @@ dist
 dist-ssr
 *.local
 
-# Environment variables
+# Environment variables (contains sensitive data like API keys, tokens)
 .env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
+.env.*.local
+
+# Sensitive configuration files
+config.local.js
+config.local.json
+secrets.json
+credentials.json
+
+# API keys and tokens (additional protection)
+**/api-keys.txt
+**/tokens.txt
+**/secrets.txt
+**/.env*
+**/config/local.*
+
+# Cloudflare credentials
+wrangler.toml.local
+.wrangler/
 
 # Package manager lock files
 bun.lockb
@@ -34,4 +52,28 @@ pnpm-lock.yaml
 *.njsproj
 *.sln
 *.sw?
+
+# Security and sensitive files
+*.pem
+*.key
+*.p12
+*.p8
+*.cert
+*.crt
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Backup files
+*.backup
+*.bak
+*.tmp
+
+# Temporary files that might contain sensitive data
+temp/
+tmp/
+.temp/
+.tmp/
 .env
