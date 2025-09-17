@@ -6,7 +6,6 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { ExternalLink, Github, Zap, Brain, Globe, Camera, Shield, Calendar, Target, Cpu } from "lucide-react";
 
 const Projects = () => {
-  const [selectedProject, setSelectedProject] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState("All");
 
   const projects = [
@@ -37,7 +36,7 @@ const Projects = () => {
       metrics: "Real-time weather data for 200+ cities",
       status: "Live Demo Available",
       github: "https://github.com/HEMANTH-S-KUMAR-1/Professional-Weather-Dashboard",
-      demo: "#",
+      demo: "https://professional-weather-dashboard.pages.dev/",
       year: "2025"
     },
     {
@@ -67,7 +66,7 @@ const Projects = () => {
       metrics: "AI-driven personalized recommendations",
       status: "Active Development",
       github: "https://github.com/HEMANTH-S-KUMAR-1/Lifecompass-ai",
-      demo: "#",
+      demo: "https://lifecompass-ai.pages.dev/",
       year: "2024"
     },
     {
@@ -82,7 +81,7 @@ const Projects = () => {
       metrics: "Agricultural data-driven predictions",
       status: "Field Testing",
       github: "https://github.com/HEMANTH-S-KUMAR-1/crop-prediction",
-      demo: "#",
+      demo: "https://crop-prediction-a0o.pages.dev/",
       year: "2024"
     },
     {
@@ -127,7 +126,7 @@ const Projects = () => {
       metrics: "Comprehensive cybersecurity education platform",
       status: "Live",
       github: "https://github.com/HEMANTH-S-KUMAR-1/cybersafe-india",
-      demo: "#",
+      demo: "https://cybersafe-india.pages.dev/",
       year: "2025"
     },
     {
@@ -328,29 +327,33 @@ const Projects = () => {
                       </div>
                       
                       <div className="flex gap-2 pt-2">
-                        <Button 
-                          size="sm" 
-                          variant="outline"
-                          className="flex-1 hover:scale-105 transition-transform"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            window.open(project.github, '_blank');
-                          }}
-                        >
-                          <Github className="w-4 h-4 mr-2" />
-                          Code
-                        </Button>
-                        <Button 
-                          size="sm"
-                          className="flex-1 bg-gradient-primary hover:shadow-glow hover:scale-105 transition-all"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            window.open(project.demo, '_blank');
-                          }}
-                        >
-                          <ExternalLink className="w-4 h-4 mr-2" />
-                          Demo
-                        </Button>
+                        {project.id !== 10 && project.id !== 11 && (
+                          <Button 
+                            size="sm" 
+                            variant="outline"
+                            className={`${project.demo !== "#" ? "flex-1" : "w-full"} hover:scale-105 transition-transform`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              window.open(project.github, '_blank');
+                            }}
+                          >
+                            <Github className="w-4 h-4 mr-2" />
+                            Code
+                          </Button>
+                        )}
+                        {project.demo !== "#" && (
+                          <Button 
+                            size="sm"
+                            className="flex-1 bg-gradient-primary hover:shadow-glow hover:scale-105 transition-all"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              window.open(project.demo, '_blank');
+                            }}
+                          >
+                            <ExternalLink className="w-4 h-4 mr-2" />
+                            Demo
+                          </Button>
+                        )}
                       </div>
                     </CardContent>
                   </Card>
@@ -410,21 +413,25 @@ const Projects = () => {
                     </div>
                     
                     <div className="flex gap-3 pt-4">
-                      <Button 
-                        className="flex-1"
-                        variant="outline"
-                        onClick={() => window.open(project.github, '_blank')}
-                      >
-                        <Github className="w-4 h-4 mr-2" />
-                        View Source Code
-                      </Button>
-                      <Button 
-                        className="flex-1 bg-gradient-primary hover:shadow-glow"
-                        onClick={() => window.open(project.demo, '_blank')}
-                      >
-                        <ExternalLink className="w-4 h-4 mr-2" />
-                        Live Demo
-                      </Button>
+                      {project.id !== 10 && project.id !== 11 && (
+                        <Button 
+                          className={`${project.demo !== "#" ? "flex-1" : "w-full"}`}
+                          variant="outline"
+                          onClick={() => window.open(project.github, '_blank')}
+                        >
+                          <Github className="w-4 h-4 mr-2" />
+                          View Source Code
+                        </Button>
+                      )}
+                      {project.demo !== "#" && (
+                        <Button 
+                          className="flex-1 bg-gradient-primary hover:shadow-glow"
+                          onClick={() => window.open(project.demo, '_blank')}
+                        >
+                          <ExternalLink className="w-4 h-4 mr-2" />
+                          Live Demo
+                        </Button>
+                      )}
                     </div>
                   </div>
                 </DialogContent>
@@ -484,21 +491,25 @@ const Projects = () => {
                   </div>
                   
                   <div className="flex gap-2 pt-2">
-                    <Button 
-                      size="sm" 
-                      variant="outline"
-                      className="flex-1 hover:scale-105 transition-transform"
-                    >
-                      <Github className="w-4 h-4 mr-2" />
-                      Code
-                    </Button>
-                    <Button 
-                      size="sm"
-                      className="flex-1 bg-gradient-primary hover:shadow-glow hover:scale-105 transition-all"
-                    >
-                      <ExternalLink className="w-4 h-4 mr-2" />
-                      Demo
-                    </Button>
+                    {project.id !== 10 && project.id !== 11 && (
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        className={`${project.demo !== "#" ? "flex-1" : "w-full"} hover:scale-105 transition-transform`}
+                      >
+                        <Github className="w-4 h-4 mr-2" />
+                        Code
+                      </Button>
+                    )}
+                    {project.demo !== "#" && (
+                      <Button 
+                        size="sm"
+                        className="flex-1 bg-gradient-primary hover:shadow-glow hover:scale-105 transition-all"
+                      >
+                        <ExternalLink className="w-4 h-4 mr-2" />
+                        Demo
+                      </Button>
+                    )}
                   </div>
                 </CardContent>
               </Card>
