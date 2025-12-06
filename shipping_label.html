@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vani's Kitchen - Shipping Label Generator</title>
+    <style>
+        :root {
+            --label-width: 4in;
+            --label-height: 6in;
+            /* 96 DPI approximation: 4in = 384px, 6in = 576px */
+            --label-width-px: 384px;
+            --label-height-px: 576px;
+        }
+
+        body {
+            font-family: 'Helvetica', 'Arial', sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Sidebar/Control Panel */
+        #control-panel {
+            width: 350px;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            z-index: 10;
+        }
+
+        h2 { margin-top: 0; font-size: 1.2rem; color: #333; }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        label {
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input, select, button {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        button#print-btn {
+            background-color: #007bff;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            padding: 12px;
+            border: none;
+            font-size: 1rem;
+        }
+
+        button#print-btn:hover {
+            background-color: #0056b3;
+        }
+
+        /* Preview Area */
+        #preview-area {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #555;
+            padding: 20px;
+            overflow: auto;
+        }
+
+        /* The Label Itself */
+        #label-container {
+            width: var(--label-width-px);
+            height: var(--label-height-px);
+            background-color: white;
+            box-sizing: border-box;
+            /* Thin outer border representing the page edge */
+            border: 1px solid #ccc; 
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            /* LaTeX geometry: margin=0.15in approx 14.4px */
+            padding: 5px; 
+        }
+
+        /* Inner Content Area - Simulates the minipage inside fbox? 
+           Actually, prompt said "generic 1px border around page, THICKER 2px inner".
+           LaTeX code uses \fbox around minipage. 
+           We will keep the 2px border as the main "frame". */
+        #inner-content {
+            border: 2px solid black;
+            flex-grow: 1;
+            /* LaTeX minipage padding simulation */
+            padding: 14px; 
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Universal Separator */
+        hr {
+            border: 0;
+            border-top: 2px solid black; /* Default to thick as per prompt/LaTeX \hrule height 2pt */
+            margin: 5px 0;
+            width: 100%;
+        }
+        
+        /* Thin Separator for specific sections if needed */
+        hr.thin {
+            border-top: 1px solid black; /* Matches plain \hrule */
+        }
+
+        /* Section 1: Header */
+        #header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 5px;
+        }
+        .header-left { text-align: left; }
+        .header-right { text-align: right; }
+        
+        .std-large { font-size: 24px; font-weight: bold; line-height: 1; }
+        .std-small { font-size: 12px; }
+        .date-bold { font-weight: bold; font-size: 14px; }
+        .wgt-text { font-size: 14px; font-weight: bold; } /* Wgt is bold in LaTeX */
+
+        /* Section 2: Return Address */
+        #return-address {
+            margin-bottom: 5px;
+        }
+        .section-title { font-size: 10px; font-weight: bold; margin-bottom: 2px; text-transform: uppercase; }
+        
+        .return-flex {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo-box {
+            width: 0.6in;
+            height: 0.6in;
+            /* Border removed as requested */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .logo-box img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        .logo-placeholder { font-size: 8px; color: #999; text-align: center; }
+
+        .return-text {
+            font-size: 11px;
+            line-height: 1.3;
+        }
+
+        /* Section 3: Ship To */
+        #ship-to {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .ship-name { font-size: 18px; font-weight: bold; text-transform: uppercase; margin-bottom: 4px; }
+        .ship-address { font-size: 14px; line-height: 1.4; }
+        .ship-pin { font-weight: bold; text-transform: uppercase; }
+        .ship-meta { font-size: 12px; margin-top: 2px; }
+
+        /* Section 4: Order Details */
+        #order-details {
+            margin-top: auto; 
+            padding-top: 5px;
+        }
+        .order-content { font-size: 12px; margin: 5px 0; }
+        .order-notes { font-size: 11px; font-style: italic;  margin-top: 2px;}
+
+        /* Print Styles */
+        @media print {
+            @page {
+                size: 4in 6in;
+                margin: 0;
+            }
+            body {
+                background: white;
+                height: auto;
+                overflow: visible;
+                display: block;
+            }
+            #control-panel { display: none; }
+            #preview-area {
+                padding: 0;
+                background: white;
+                display: block;
+            }
+            #label-container {
+                border: none;
+                width: 100%;
+                height: 100%;
+                page-break-after: always;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- CONTROL PANEL -->
+    <div id="control-panel">
+        <h2>Label Details</h2>
+        
+        <div class="form-group">
+            <label for="input-name">Name</label>
+            <input type="text" id="input-name" placeholder="Recipient Name">
+        </div>
+
+        <div class="form-group">
+            <label for="input-address1">Address Line 1</label>
+            <input type="text" id="input-address1" placeholder="House/Flat No, Building">
+        </div>
+
+        <div class="form-group">
+            <label for="input-address2">Address Line 2</label>
+            <input type="text" id="input-address2" placeholder="Street, Area">
+        </div>
+        
+        <div class="form-group">
+            <label for="input-address3">Address Line 3</label>
+            <input type="text" id="input-address3" placeholder="Landmark/Extra">
+        </div>
+
+        <div class="form-group">
+            <label for="input-city">City</label>
+            <input type="text" id="input-city">
+        </div>
+
+        <div class="form-group">
+            <label for="input-state">State / Country</label>
+            <input type="text" id="input-state" value="Karnataka, India">
+        </div>
+
+        <div class="form-group">
+            <label for="input-pin">Pin Code</label>
+            <input type="text" id="input-pin">
+        </div>
+
+        <div class="form-group">
+            <label for="input-phone">Phone</label>
+            <input type="text" id="input-phone">
+        </div>
+
+        <hr style="border-top: 1px solid #ddd; width:100%;">
+        
+        <div class="form-group">
+            <label for="input-date">Date</label>
+            <input type="date" id="input-date">
+        </div>
+
+        <div class="form-group">
+            <label for="input-weight">Weight Class</label>
+            <select id="input-weight">
+                <option value="0.25">0.25 kg (250g)</option>
+                <option value="0.50">0.50 kg (500g)</option>
+                <option value="0.75">0.75 kg (750g)</option>
+                <option value="1.00">1.00 kg (1kg)</option>
+                <option value="1.25">1.25 kg (1.25kg)</option>
+                <option value="1.50">1.50 kg (1.5kg)</option>
+                <option value="2.00">2.00 kg (2kg)</option>
+                <option value="3.00">3.00 kg (3kg)</option>
+                <option value="5.00">5.00 kg (5kg)</option>
+            </select>
+        </div>
+
+        <!-- Logo Override Removed as requested -->
+
+        <button id="print-btn" onclick="window.print()">PRINT LABEL</button>
+    </div>
+
+    <!-- PREVIEW AREA -->
+    <div id="preview-area">
+        <div id="label-container">
+            <div id="inner-content">
+                
+                <!-- Section 1 -->
+                <div id="header">
+                    <div class="header-left">
+                        <div class="std-large">STD</div>
+                        <div class="std-small">Standard Shipping</div>
+                    </div>
+                    <div class="header-right">
+                        <div class="date-bold">DATE: <span id="lbl-date"></span></div>
+                        <div class="wgt-text">Wgt: <span id="lbl-weight">0.50 kg</span></div>
+                    </div>
+                </div>
+
+                <hr>
+
+                <!-- Section 2 -->
+                <div id="return-address">
+                    <div class="section-title">RETURN ADDRESS:</div>
+                    <div class="return-flex">
+                        <div class="logo-box">
+                            <img id="custom-logo" src="C:\PARVATHI_MAA\logo.jpg" alt="Logo">
+                        </div>
+                        <div class="return-text">
+                            <strong>Vani’s Kitchen</strong><br>
+                            Jayanagar 1st cross,<br>
+                            Tumkur, Karnataka<br>
+                            Pin: 572101<br>
+                            Ph: +91 8105403415
+                        </div>
+                    </div>
+                </div>
+
+                <hr>
+
+                <!-- Section 3 -->
+                <div id="ship-to">
+                    <div class="section-title">SHIP TO:</div>
+                    <div style="margin-top: 5px;">
+                        <div class="ship-name" id="lbl-name">RECIPIENT NAME</div>
+                        <div class="ship-address">
+                            <span id="lbl-addr1">Address Line 1</span><br>
+                            <span id="lbl-addr2">Address Line 2</span><br>
+                            <span id="lbl-addr3" style="display:block">Address Line 3</span>
+                            <span id="lbl-city">City</span>, <span id="lbl-state">State</span><br>
+                            <span class="ship-pin">PIN: <span id="lbl-pin">000000</span></span>
+                        </div>
+                        <div class="ship-meta">
+                            <span style="font-size:12px">INDIA</span><br>
+                            Ph: <span id="lbl-phone">Phone</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Last separator is thiner in LaTeX (\hrule vs \hrule height 2pt) -->
+                <hr class="thin">
+
+                <!-- Section 4 -->
+                <div id="order-details">
+                    <div class="section-title">ORDER DETAILS:</div>
+                    <div class="order-content" id="lbl-order-content">
+                        1 x Product A: Super-Seed Mix (500g)
+                    </div>
+                    <div class="order-notes">
+                        Notes: Handle with care. Food Item.
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data Structure
+        const defaultData = {
+            name: "SHREEDAR R S",
+            address1: "Shree Guru Boys PG",
+            address2: "Rajendra Kriti Lane No 1",
+            address3: "Shree Venketesh Prasad",
+            city: "Pune",
+            state: "MAHARASHTRA", 
+            pin: "411014",
+            phone: "+91 90759 02165 / 98801 57921",
+            weight: "0.50"
+        };
+
+        // Grammar for weights
+        const weightMap = {
+            "0.25": { label: "0.25 kg", order: "250g" },
+            "0.50": { label: "0.50 kg", order: "500g" },
+            "0.75": { label: "0.75 kg", order: "750g" },
+            "1.00": { label: "1.00 kg", order: "1kg" },
+            "1.25": { label: "1.25 kg", order: "1.25kg" },
+            "1.50": { label: "1.50 kg", order: "1.5kg" },
+            "2.00": { label: "2.00 kg", order: "2kg" },
+            "3.00": { label: "3.00 kg", order: "3kg" },
+            "5.00": { label: "5.00 kg", order: "5kg" }
+        };
+
+        // DOM Elements
+        const inputs = {
+            name: document.getElementById('input-name'),
+            address1: document.getElementById('input-address1'),
+            address2: document.getElementById('input-address2'),
+            address3: document.getElementById('input-address3'),
+            city: document.getElementById('input-city'),
+            state: document.getElementById('input-state'),
+            pin: document.getElementById('input-pin'),
+            phone: document.getElementById('input-phone'),
+            date: document.getElementById('input-date'),
+            weight: document.getElementById('input-weight')
+            // Logo input removed
+        };
+
+        const labels = {
+            name: document.getElementById('lbl-name'),
+            addr1: document.getElementById('lbl-addr1'),
+            addr2: document.getElementById('lbl-addr2'),
+            addr3: document.getElementById('lbl-addr3'),
+            city: document.getElementById('lbl-city'),
+            state: document.getElementById('lbl-state'),
+            pin: document.getElementById('lbl-pin'),
+            phone: document.getElementById('lbl-phone'),
+            weight: document.getElementById('lbl-weight'),
+            order: document.getElementById('lbl-order-content'),
+            date: document.getElementById('lbl-date'),
+            logo: document.getElementById('custom-logo')
+        };
+
+        // Initialize
+        function init() {
+            // Initialize Date Input to Today
+            const today = new Date();
+            // Input type='date' requires YYYY-MM-DD
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            inputs.date.value = `${yyyy}-${mm}-${dd}`;
+
+            // Fill Defaults
+            inputs.name.value = defaultData.name;
+            inputs.address1.value = defaultData.address1;
+            inputs.address2.value = defaultData.address2;
+            inputs.address3.value = defaultData.address3;
+            inputs.city.value = defaultData.city;
+            inputs.state.value = defaultData.state;
+            inputs.pin.value = defaultData.pin;
+            inputs.phone.value = defaultData.phone;
+            inputs.weight.value = defaultData.weight;
+
+            // Trigger updates
+            updateAll();
+
+            // Add Event Listeners
+            Object.values(inputs).forEach(input => {
+                input.addEventListener('input', updateAll);
+            });
+
+            // Logo Error Handling
+            labels.logo.onerror = function() {
+                // Remove border box if image fails
+                // this.style.display = 'none'; // Keep space or collapse? 
+                // Suggestion: keep space so layout doesn't shift, but show nothing.
+                this.style.visibility = 'hidden'; 
+            };
+        }
+
+        function updateAll() {
+            // Update Date Label (Format YYYY-MM-DD from input to DD-MM-YYYY)
+            if (inputs.date.value) {
+                const [y, m, d] = inputs.date.value.split('-');
+                labels.date.textContent = `${d}-${m}-${y}`;
+            } else {
+                labels.date.textContent = "DD-MM-YYYY";
+            }
+
+            // Update Text Fields
+            labels.name.textContent = inputs.name.value || "NAME";
+            labels.addr1.textContent = inputs.address1.value;
+            labels.addr2.textContent = inputs.address2.value;
+            // Handle Address 3 visibility
+            if(inputs.address3.value) {
+                labels.addr3.style.display = 'inline';
+                labels.addr3.textContent = inputs.address3.value;
+                labels.addr3.nextSibling.textContent = ""; // remove break if logical, but here we stack
+                labels.addr3.innerHTML += "<br>";
+            } else {
+                labels.addr3.style.display = 'none';
+            }
+
+            labels.city.textContent = inputs.city.value;
+            labels.state.textContent = inputs.state.value;
+            labels.pin.textContent = inputs.pin.value;
+            labels.phone.textContent = inputs.phone.value;
+
+            // Update Weight & Order Logic
+            const wVal = inputs.weight.value;
+            const wData = weightMap[wVal];
+            
+            labels.weight.textContent = wData.label;
+            labels.order.textContent = `1 x Product A: Super-Seed Mix (${wData.order})`;
+        }
+
+        init();
+    </script>
+</body>
+</html>
