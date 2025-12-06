@@ -94,7 +94,10 @@
             display: flex;
             flex-direction: column;
             /* LaTeX geometry: margin=0.15in approx 14.4px */
-            padding: 5px; 
+            padding: 5px;
+            
+            /* INCREASE SIZE BY 50% */
+            zoom: 1.5; 
         }
 
         /* Inner Content Area - Simulates the minipage inside fbox? 
@@ -195,7 +198,7 @@
         /* Print Styles */
         @media print {
             @page {
-                size: 4in 6in;
+                size: 6in 9in; /* Scaled 50% up from 4x6 */
                 margin: 0;
             }
             body {
@@ -215,6 +218,7 @@
                 width: 100%;
                 height: 100%;
                 page-break-after: always;
+                zoom: 1.5; /* Ensure print scales too */
             }
         }
     </style>
