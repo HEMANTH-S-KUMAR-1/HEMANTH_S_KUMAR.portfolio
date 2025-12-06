@@ -472,6 +472,7 @@
             }
 
             // Update Text Fields
+            inputs.name.value = inputs.name.value.toUpperCase(); // Force uppercase input
             labels.name.textContent = inputs.name.value || "NAME";
             labels.addr1.textContent = inputs.address1.value;
             labels.addr2.textContent = inputs.address2.value;
