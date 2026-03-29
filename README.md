@@ -239,7 +239,7 @@ npx serve .
 
 ## 📄 License
 
-© 2025 **Hemanth S Kumar**. All Rights Reserved.
+© 2026 **Hemanth S Kumar**. All Rights Reserved.
 
 Built with ❤️ from Tumakuru, India.
 
