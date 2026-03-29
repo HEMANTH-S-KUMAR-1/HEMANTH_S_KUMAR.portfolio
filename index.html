@@ -723,37 +723,82 @@
             box-shadow: 0 0 10px rgba(0, 212, 255, 0.1);
         }
 
-        /* Ad Slots */
-        .ad-slot-wrapper {
+        /* Vani's Kitchen Native Ad Slots */
+        .vk-ad-wrapper {
             width: 100%;
             display: flex;
-            justify-content: center;
-            margin: 3rem 0;
+            flex-direction: column;
+            align-items: center;
+            margin: 4rem 0;
+            padding: 0 20px;
         }
 
-        .ad-slot {
-            border: 2px dashed #9ca3af;
-            background-color: #f3f4f6;
-            color: #374151;
+        .vk-ad-banner {
+            display: block;
+            width: 100%;
+            max-width: 650px;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .vk-ad-banner:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(0, 212, 255, 0.2);
+            border-color: var(--accent-cyan);
+        }
+
+        .vk-ad-banner img {
+            width: 100%;
+            display: block;
+            height: auto;
+        }
+
+        .vk-ad-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .vk-btn {
             display: flex;
             align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 50px;
             font-weight: 600;
-            border-radius: 4px;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            text-decoration: none;
         }
 
-        .ad-top-bottom {
-            width: 728px;
-            height: 90px;
-            max-width: 100%;
+        .vk-btn-wa {
+            background: #25D366;
+            color: white;
+            box-shadow: 0 5px 15px rgba(37, 211, 102, 0.3);
         }
 
-        .ad-middle {
-            width: 300px;
-            height: 250px;
-            max-width: 100%;
+        .vk-btn-wa:hover {
+            background: #1eb956;
+            transform: translateY(-2px);
         }
+
+        .vk-btn-ig {
+            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+            color: white;
+            box-shadow: 0 5px 15px rgba(220, 39, 67, 0.3);
+        }
+
+        .vk-btn-ig:hover {
+            transform: translateY(-2px);
+        }
+
 
         /* Footer */
         footer {
@@ -1251,12 +1296,7 @@
         </div>
     </section>
 
-    <!-- Advertisement -->
-    <div class="ad-slot-wrapper reveal">
-        <div id="ad-slot-top" class="ad-slot ad-top-bottom">
-            <span>Advertisement</span>
-        </div>
-    </div>
+    <!-- Advertisement Removed -->
 
     <!-- About Section -->
     <section id="about" class="section reveal">
@@ -1512,10 +1552,18 @@
         </div>
     </section>
 
-    <!-- Advertisement -->
-    <div class="ad-slot-wrapper reveal">
-        <div id="ad-slot-middle" class="ad-slot ad-middle">
-            <span>Advertisement</span>
+    <!-- Native Ad Slot: Vani's Kitchen Weight Gain -->
+    <div class="vk-ad-wrapper reveal">
+        <a href="https://wa.me/918105403415" target="_blank" class="vk-ad-banner">
+            <img src="./assets/weight-gain.jpg" alt="Vani's Kitchen High-Calorie Super Seed Mix for Natural Weight Gain">
+        </a>
+        <div class="vk-ad-actions">
+            <a href="https://wa.me/918105403415" target="_blank" class="vk-btn vk-btn-wa">
+                <i class="fab fa-whatsapp" style="font-size: 1.2rem;"></i> Order on WhatsApp
+            </a>
+            <a href="https://www.instagram.com/vani_s_kitchenn/" target="_blank" class="vk-btn vk-btn-ig">
+                <i class="fab fa-instagram" style="font-size: 1.2rem;"></i> Learn More on Instagram
+            </a>
         </div>
     </div>
 
@@ -1887,10 +1935,18 @@
         </div>
     </section>
 
-    <!-- Advertisement -->
-    <div class="ad-slot-wrapper reveal">
-        <div id="ad-slot-bottom" class="ad-slot ad-top-bottom">
-            <span>Advertisement</span>
+    <!-- Native Ad Slot: Vani's Kitchen Weight Control -->
+    <div class="vk-ad-wrapper reveal">
+        <a href="https://wa.me/918105403415" target="_blank" class="vk-ad-banner">
+            <img src="./assets/weight-control.jpg" alt="Vani's Kitchen High-Fiber Weight Control Mix for Cravings Control">
+        </a>
+        <div class="vk-ad-actions">
+            <a href="https://wa.me/918105403415" target="_blank" class="vk-btn vk-btn-wa">
+                <i class="fab fa-whatsapp" style="font-size: 1.2rem;"></i> Order on WhatsApp
+            </a>
+            <a href="https://www.instagram.com/vani_s_kitchenn/" target="_blank" class="vk-btn vk-btn-ig">
+                <i class="fab fa-instagram" style="font-size: 1.2rem;"></i> Learn More on Instagram
+            </a>
         </div>
     </div>
 
