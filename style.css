@@ -421,7 +421,7 @@ section {
 
 .exp-date {
   font-size: 0.85rem;
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
   margin-top: 0.25rem;
 }
 
